@@ -92,6 +92,7 @@ fn count_dir(board: &Vec<Vec<i8>>, size: usize, row: usize, col: usize, dr: i32,
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![get_ai_move, check_win])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

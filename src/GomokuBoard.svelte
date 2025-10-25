@@ -13,30 +13,57 @@
 
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
-  let cellSize = 35;
-  let padding = cellSize / 2;
-  let canvasSize = 0;
+  let isDarkMode = false;
 
-  // 计算画布尺寸
-  $: {
-    cellSize = Math.min(500 / boardSize, 35);
-    padding = cellSize / 2;
-    canvasSize = (boardSize - 1) * cellSize + 2 * padding;
+  // 根据棋盘大小计算固定尺寸
+  $: cellSize = calculateCellSize(boardSize);
+  $: padding = cellSize / 2;
+  $: canvasSize = (boardSize - 1) * cellSize + 2 * padding;
+
+  // 计算每格大小：棋盘越大，格子越小
+  function calculateCellSize(size: number): number {
+    if (size <= 9) return 45;
+    if (size <= 13) return 38;
+    if (size <= 15) return 35;
+    return 30; // 19x19
+  }
+
+  // 更新画布尺寸和缩放
+  function updateCanvas() {
+    if (!ctx || !canvas) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvasSize * dpr;
+    canvas.height = canvasSize * dpr;
+    canvas.style.width = `${canvasSize}px`;
+    canvas.style.height = `${canvasSize}px`;
+    ctx.scale(dpr, dpr);
+
+    drawBoard();
+  }
+
+  // 响应式更新画布
+  $: if (ctx && canvasSize > 0) {
+    updateCanvas();
   }
 
   onMount(() => {
     ctx = canvas.getContext('2d');
-    if (ctx) {
-      // 设置高 DPI 支持
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = canvasSize * dpr;
-      canvas.height = canvasSize * dpr;
-      canvas.style.width = `${canvasSize}px`;
-      canvas.style.height = `${canvasSize}px`;
-      ctx.scale(dpr, dpr);
 
+    // 监听暗色模式变化
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    isDarkMode = darkModeQuery.matches;
+
+    const handleDarkModeChange = (e: MediaQueryListEvent) => {
+      isDarkMode = e.matches;
       drawBoard();
-    }
+    };
+
+    darkModeQuery.addEventListener('change', handleDarkModeChange);
+
+    return () => {
+      darkModeQuery.removeEventListener('change', handleDarkModeChange);
+    };
   });
 
   afterUpdate(() => {
@@ -51,6 +78,10 @@
 
     // 清空画布
     ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    // 绘制棋盘背景（木质纹理色）
+    ctx.fillStyle = isDarkMode ? '#3d3326' : '#dcb35c';
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
 
     // 绘制网格线
     drawGrid();
@@ -71,7 +102,7 @@
   function drawGrid() {
     if (!ctx) return;
 
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+    ctx.strokeStyle = isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.8)';
     ctx.lineWidth = 1;
 
     // 绘制横线
@@ -97,7 +128,7 @@
   function drawStarPoints() {
     if (!ctx) return;
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillStyle = isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.7)';
 
     let starPoints: [number, number][] = [];
 
@@ -230,12 +261,5 @@
 <canvas
   bind:this={canvas}
   on:click={handleClick}
-  style="cursor: pointer; border-radius: 12px;"
+  style="cursor: pointer; border-radius: 12px; display: block; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);"
 />
-
-<style>
-  canvas {
-    display: block;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-</style>

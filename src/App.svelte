@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invoke } from "@tauri-apps/api/tauri";
+  import { invoke } from "@tauri-apps/api/core";
   import GomokuBoard from "./GomokuBoard.svelte";
 
   const EMPTY = 0;
@@ -260,14 +260,16 @@
 
   main {
     width: 100%;
-    max-width: 800px;
     padding: 20px;
+    box-sizing: border-box;
   }
 
   .container {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: fit-content;
+    margin: 0 auto;
   }
 
   /* Glass Panel Effect - True macOS Style */
@@ -434,10 +436,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 24px;
     background: rgba(220, 179, 92, 0.35);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    box-sizing: border-box;
   }
 
   @media (prefers-color-scheme: dark) {
