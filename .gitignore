@@ -1,0 +1,62 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Tauri Build
+src-tauri/target
+src-tauri/WixTools
+src-tauri/gen
+
+# Rust
+*.rs.bk
+*.pdb
+
+# Build Outputs - macOS
+*.dmg
+*.app
+*.pkg
+
+# Build Outputs - Windows
+*.exe
+*.msi
+*.exe.manifest
+
+# Build Outputs - Linux
+*.deb
+*.AppImage
+*.rpm
+
+# Temporary and Cache
+*.tmp
+*.temp
+.cache
+.turbo
+.vite
+.swc
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
