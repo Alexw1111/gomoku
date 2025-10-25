@@ -23,8 +23,7 @@
       "targets": "all",
       "identifier": "com.gomoku.ai",
       "icon": [
-        "icons/icon.png",
-        "icons/icon.ico"
+        "icons/icon.svg"
       ]
     },
     "security": {
